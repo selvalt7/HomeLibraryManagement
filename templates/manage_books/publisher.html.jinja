@@ -1,0 +1,43 @@
+{% extends "base.html.jinja" %}
+
+{% block content %}
+  <div class="space-y-6">
+    <div class="rounded bg-white p-6 shadow-sm">
+      <h1 class="text-4xl font-bold">{{ publisher.name }}</h1>
+      <p class="mt-2 text-slate-600">Kraj: {{ publisher.get_country_display }}</p>
+      <p class="mt-1 text-slate-600">Rok założenia: {{ publisher.founded_year }}</p>
+      {% if publisher.website %}
+        <p class="mt-1 text-slate-600">Strona: <a href="{{ publisher.website }}" class="text-blue-600 hover:underline" target="_blank" rel="noopener">{{ publisher.website }}</a></p>
+      {% endif %}
+      {% if publisher.email %}
+        <p class="mt-1 text-slate-600">Email: <a href="mailto:{{ publisher.email }}" class="text-blue-600 hover:underline">{{ publisher.email }}</a></p>
+      {% endif %}
+      {% if request.user.is_authenticated %}
+        <a href="/publisher/{{ publisher.id }}/edit/" class="mt-4 inline-flex rounded bg-slate-800 px-4 py-2 text-white hover:bg-slate-700">Edytuj wydawcę</a>
+      {% endif %}
+    </div>
+
+    <section class="rounded bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-semibold mb-4">Książki wydawcy</h2>
+      <div class="space-y-4">
+        {% if books %}
+          {% for book in books %}
+            <div class="rounded border border-slate-200 p-4 hover:border-slate-400">
+              <a href="/book/{{ book.id }}/" class="text-xl font-medium text-blue-600 hover:underline">{{ book.title }}</a>
+              <p class="text-slate-500">{{ book.published_date }}</p>
+            </div>
+          {% endfor %}
+        {% else %}
+          {% for book in publisher.book_set.all %}
+            <div class="rounded border border-slate-200 p-4 hover:border-slate-400">
+              <a href="/book/{{ book.id }}/" class="text-xl font-medium text-blue-600 hover:underline">{{ book.title }}</a>
+              <p class="text-slate-500">{{ book.published_date }}</p>
+            </div>
+          {% empty %}
+            <p class="text-slate-500">Brak książek tego wydawcy w bibliotece.</p>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </section>
+  </div>
+{% endblock %}

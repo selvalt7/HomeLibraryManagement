@@ -1,0 +1,108 @@
+{% extends "base.html.jinja" %}
+
+{% block content %}
+  <div class="flex flex-col gap-6">
+    <div class="rounded bg-white p-6 shadow-sm">
+      <h1 class="text-4xl font-bold">Moja biblioteka książek</h1>
+      <p class="mt-2 text-slate-600">Przeglądaj wszystkie książki, ulubione pozycje, przeczytane tytuły oraz wybieraj filtrowanie według gatunku i tematu.</p>
+    </div>
+
+    <div class="grid gap-6 xl:grid-cols-[280px_1fr]">
+      <aside class="space-y-6">
+        <section class="rounded bg-white p-6 shadow-sm">
+          <h2 class="text-2xl font-semibold mb-4">Filtruj książki</h2>
+          <div class="space-y-4">
+            <div>
+              <h3 class="font-semibold">Gatunki</h3>
+              <ul class="mt-2 space-y-2 text-slate-700">
+                {% for genre in genres %}
+                  <li><a href="?genre={{ genre.id }}" class="text-blue-600 hover:underline">{{ genre.name }}</a></li>
+                {% empty %}
+                  <li class="text-slate-500">Brak gatunków do filtrowania.</li>
+                {% endfor %}
+              </ul>
+            </div>
+
+            <div>
+              <h3 class="font-semibold">Tematy</h3>
+              <ul class="mt-2 space-y-2 text-slate-700">
+                {% for topic in topics %}
+                  <li><a href="?topic={{ topic.id }}" class="text-blue-600 hover:underline">{{ topic.name }}</a></li>
+                {% empty %}
+                  <li class="text-slate-500">Brak tematów do filtrowania.</li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="rounded bg-white p-6 shadow-sm">
+          <h2 class="text-2xl font-semibold mb-4">Ulubione książki</h2>
+          <ul class="space-y-3 text-slate-700">
+            {% for book in favorite_books %}
+              <li>
+                <a href="/book/{{ book.id }}/" class="font-medium text-blue-600 hover:underline">{{ book.title }}</a>
+                <div class="text-sm text-slate-500">{{ book.published_date }}</div>
+              </li>
+            {% empty %}
+              <li class="text-slate-500">Nie dodałeś jeszcze ulubionych książek.</li>
+            {% endfor %}
+          </ul>
+        </section>
+
+        <section class="rounded bg-white p-6 shadow-sm">
+          <h2 class="text-2xl font-semibold mb-4">Przeczytane książki</h2>
+          <ul class="space-y-3 text-slate-700">
+            {% for book in read_books %}
+              <li>
+                <a href="/book/{{ book.id }}/" class="font-medium text-blue-600 hover:underline">{{ book.title }}</a>
+                <div class="text-sm text-slate-500">{{ book.published_date }}</div>
+              </li>
+            {% empty %}
+              <li class="text-slate-500">Jeszcze nie oznaczyłeś żadnej książki jako przeczytanej.</li>
+            {% endfor %}
+          </ul>
+        </section>
+      </aside>
+
+      <section class="rounded bg-white p-6 shadow-sm">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 class="text-2xl font-semibold">Wszystkie książki</h2>
+            <p class="mt-1 text-slate-600">Kliknij tytuł, aby przejść do szczegółów książki.</p>
+          </div>
+          {% if request.user.is_authenticated %}
+            <a href="/book/add/" class="inline-flex items-center rounded bg-emerald-500 px-4 py-2 text-white hover:bg-emerald-400">Dodaj nową książkę</a>
+          {% endif %}
+        </div>
+
+        <div class="mt-6 overflow-x-auto">
+          <table class="min-w-full divide-y divide-slate-200 text-left text-sm">
+            <thead class="bg-slate-50 text-slate-700">
+              <tr>
+                <th class="px-4 py-3">Tytuł</th>
+                <th class="px-4 py-3">Autor</th>
+                <th class="px-4 py-3">Wydawca</th>
+                <th class="px-4 py-3">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200 bg-white">
+              {% for book in books %}
+                <tr>
+                  <td class="px-4 py-3"><a href="/book/{{ book.id }}/" class="font-medium text-blue-600 hover:underline">{{ book.title }}</a></td>
+                  <td class="px-4 py-3 text-slate-700">{% if book.authors.all %}{% for author in book.authors.all %}{{ author.name }} {{ author.last_name }}{% if not forloop.last %}, {% endif %}{% endfor %}{% else %}{{ book.author }}{% endif %}</td>
+                  <td class="px-4 py-3 text-slate-700">{{ book.publisher.name }}</td>
+                  <td class="px-4 py-3 text-slate-700">{% if book.is_favorite %}Ulubiona{% elif book.is_read %}Przeczytana{% else %}Nowa{% endif %}</td>
+                </tr>
+              {% empty %}
+                <tr>
+                  <td class="px-4 py-6 text-slate-500" colspan="4">Brak książek w bibliotece.</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+{% endblock %}

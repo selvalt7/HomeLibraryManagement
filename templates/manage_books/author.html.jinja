@@ -1,0 +1,39 @@
+{% extends "base.html.jinja" %}
+
+{% block content %}
+  <div class="space-y-6">
+    <div class="rounded bg-white p-6 shadow-sm">
+      <h1 class="text-4xl font-bold">{{ author.title }} {{ author.name }} {{ author.last_name }}</h1>
+      {% if author.alias %}
+        <p class="mt-2 text-slate-600">Pseudonim: {{ author.alias }}</p>
+      {% endif %}
+      <p class="mt-2 text-slate-600">Narodowość: {{ author.nationality }}</p>
+      {% if request.user.is_authenticated %}
+        <a href="/author/{{ author.id }}/edit/" class="mt-4 inline-flex rounded bg-slate-800 px-4 py-2 text-white hover:bg-slate-700">Edytuj autora</a>
+      {% endif %}
+    </div>
+
+    <section class="rounded bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-semibold mb-4">Książki autora</h2>
+      <div class="space-y-4">
+        {% if books %}
+          {% for book in books %}
+            <div class="rounded border border-slate-200 p-4 hover:border-slate-400">
+              <a href="/book/{{ book.id }}/" class="text-xl font-medium text-blue-600 hover:underline">{{ book.title }}</a>
+              <p class="text-slate-500">{{ book.published_date }}</p>
+            </div>
+          {% endfor %}
+        {% else %}
+          {% for book in author.books.all %}
+            <div class="rounded border border-slate-200 p-4 hover:border-slate-400">
+              <a href="/book/{{ book.id }}/" class="text-xl font-medium text-blue-600 hover:underline">{{ book.title }}</a>
+              <p class="text-slate-500">{{ book.published_date }}</p>
+            </div>
+          {% empty %}
+            <p class="text-slate-500">Brak książek tego autora w bibliotece.</p>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </section>
+  </div>
+{% endblock %}

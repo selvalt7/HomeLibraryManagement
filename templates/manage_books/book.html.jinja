@@ -1,0 +1,118 @@
+{% extends "base.html.jinja" %}
+
+{% block content %}
+  <div class="space-y-6">
+    <div class="rounded bg-white p-6 shadow-sm">
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 class="text-4xl font-bold">{{ book.title }}</h1>
+          <p class="mt-2 text-slate-600">Szczegóły książki i notatki</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          {% if book.is_read %}
+            <a href="/book/{{ book.id }}/mark-unread/" class="rounded bg-slate-700 px-4 py-2 text-sm text-white hover:bg-slate-600">Oznacz jako nieprzeczytaną</a>
+          {% else %}
+            <a href="/book/{{ book.id }}/mark-read/" class="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-500">Oznacz jako przeczytaną</a>
+          {% endif %}
+          {% if book.is_favorite %}
+            <a href="/book/{{ book.id }}/favorite/remove/" class="rounded bg-orange-500 px-4 py-2 text-sm text-white hover:bg-orange-400">Usuń z ulubionych</a>
+          {% else %}
+            <a href="/book/{{ book.id }}/favorite/add/" class="rounded bg-emerald-500 px-4 py-2 text-sm text-white hover:bg-emerald-400">Dodaj do ulubionych</a>
+          {% endif %}
+          {% if request.user.is_authenticated %}
+            <a href="/book/{{ book.id }}/edit/" class="rounded border border-slate-300 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">Edytuj książkę</a>
+            <a href="/book/{{ book.id }}/delete/" class="rounded border border-red-300 px-4 py-2 text-sm text-red-700 hover:bg-red-50">Usuń książkę</a>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="mt-8 grid gap-6 lg:grid-cols-2">
+        <div class="space-y-4">
+          <p><span class="font-semibold">ISBN:</span> {{ book.isbn }}</p>
+          <p><span class="font-semibold">Data publikacji:</span> {{ book.published_date }}</p>
+          <p><span class="font-semibold">Liczba stron:</span> {{ book.pages }}</p>
+          <p><span class="font-semibold">Rodzaj okładki:</span> {{ book.get_cover_display }}</p>
+          <p><span class="font-semibold">Język:</span> {{ book.get_language_display }}</p>
+          <p><span class="font-semibold">Status:</span> {% if book.is_read %}Przeczytana{% else %}Nieprzeczytana{% endif %}</p>
+          <p><span class="font-semibold">Ulubiona:</span> {% if book.is_favorite %}Tak{% else %}Nie{% endif %}</p>
+        </div>
+
+        <div class="space-y-4">
+          <p><span class="font-semibold">Autorzy:</span>
+            {% if book.authors.all %}
+              {% for author in book.authors.all %}
+                <a href="/author/{{ author.id }}/" class="text-blue-600 hover:underline">{{ author.name }} {{ author.last_name }}</a>{% if not forloop.last %}, {% endif %}
+              {% endfor %}
+            {% else %}
+              {{ book.author }}
+            {% endif %}
+          </p>
+          <p><span class="font-semibold">Wydawca:</span> <a href="/publisher/{{ book.publisher.id }}/" class="text-blue-600 hover:underline">{{ book.publisher.name }}</a></p>
+          <p><span class="font-semibold">Seria:</span>
+            {% if book.series %}
+              <a href="/series/{{ book.series.id }}/" class="text-blue-600 hover:underline">{{ book.series.name }}</a>
+            {% else %}
+              Brak
+            {% endif %}
+          </p>
+          <p><span class="font-semibold">Gatunki:</span>
+            {% if book.genres.all %}
+              {% for genre in book.genres.all %}
+                <span class="inline-flex rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-700">{{ genre.name }}</span>
+              {% endfor %}
+            {% else %}
+              Brak
+            {% endif %}
+          </p>
+          <p><span class="font-semibold">Tematy:</span>
+            {% if book.topic.all %}
+              {% for topic in book.topic.all %}
+                <span class="inline-flex rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-700">{{ topic.name }}</span>
+              {% endfor %}
+            {% else %}
+              Brak
+            {% endif %}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <section class="rounded bg-white p-6 shadow-sm">
+      <div class="flex items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl font-semibold">Notatki</h2>
+          <p class="mt-1 text-slate-600">Dodaj własne uwagi do książki i przeglądaj historię notatek.</p>
+        </div>
+        {% if request.user.is_authenticated %}
+          <a href="#notes" class="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-500">Dodaj notatkę</a>
+        {% endif %}
+      </div>
+
+      {% if request.user.is_authenticated %}
+        <form action="/book/{{ book.id }}/notes/add/" method="post" class="mt-6 space-y-4">
+          {% csrf_token %}
+          <label class="block">
+            <span class="text-sm font-medium text-slate-700">Nowa notatka</span>
+            <textarea name="content" rows="4" class="mt-2 w-full rounded border border-slate-300 bg-slate-50 p-3 text-slate-900" placeholder="Wpisz treść notatki..."></textarea>
+          </label>
+          <button type="submit" class="rounded bg-emerald-500 px-5 py-2 text-white hover:bg-emerald-400">Zapisz notatkę</button>
+        </form>
+      {% else %}
+        <p class="mt-6 rounded border border-amber-200 bg-amber-50 p-4 text-amber-900">Zaloguj się, aby dodawać notatki i edytować książki. <a href="/login/" class="font-semibold text-blue-600 hover:underline">Przejdź do zalogowania</a>.</p>
+      {% endif %}
+
+      <div id="notes" class="mt-8 space-y-4">
+        {% if notes %}
+          {% for note in notes %}
+            <article class="rounded border border-slate-200 bg-slate-50 p-4">
+              <p class="text-slate-800">{{ note.content }}</p>
+              <p class="mt-3 text-sm text-slate-500">Dodano: {{ note.created_at }}</p>
+            </article>
+          {% endfor %}
+        {% else %}
+          <p class="text-slate-500">Brak notatek dla tej książki.</p>
+        {% endif %}
+      </div>
+    </section>
+  </div>
+{% endblock %}
