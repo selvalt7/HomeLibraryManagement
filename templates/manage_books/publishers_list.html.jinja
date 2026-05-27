@@ -1,0 +1,26 @@
+{% extends "base.html.jinja" %}
+
+{% block content %}
+  <div class="space-y-6">
+    <div class="rounded bg-white p-6 shadow-sm">
+      <h1 class="text-4xl font-bold">Lista wydawców</h1>
+      <p class="mt-2 text-slate-600">Przeglądaj wydawców i ich książki dostępne w bibliotece.</p>
+    </div>
+
+    <section class="rounded bg-white p-6 shadow-sm">
+      {% if publishers %}
+        <div class="grid gap-4 sm:grid-cols-2">
+          {% for publisher in publishers %}
+            <article class="rounded border border-slate-200 p-5 hover:border-slate-400">
+              <a href="/publisher/{{ publisher.id }}/" class="text-xl font-semibold text-blue-600 hover:underline">{{ publisher.name }}</a>
+              <p class="mt-2 text-slate-500">Kraj: {{ publisher.get_country_display }}</p>
+              <p class="mt-1 text-slate-500">Rok założenia: {{ publisher.founded_year }}</p>
+            </article>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="text-slate-500">Brak wydawców w bazie.</p>
+      {% endif %}
+    </section>
+  </div>
+{% endblock %}

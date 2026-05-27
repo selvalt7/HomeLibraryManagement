@@ -9,6 +9,64 @@
 
     <div class="grid gap-6 xl:grid-cols-[280px_1fr]">
       <aside class="space-y-6">
+        {% if genre_name or topic_name or author_name or publisher_name or series_name or is_read or is_favorite %}
+          <section class="rounded bg-blue-50 p-6 shadow-sm border border-blue-200">
+            <h2 class="text-lg font-semibold mb-3 text-blue-900">Aktywne filtry</h2>
+            <div class="space-y-2 text-sm">
+              {% if genre_name %}
+                <div class="bg-blue-100 px-3 py-2 rounded text-blue-900">
+                  Gatunek: <strong>{{ genre_name }}</strong>
+                </div>
+              {% endif %}
+              {% if topic_name %}
+                <div class="bg-blue-100 px-3 py-2 rounded text-blue-900">
+                  Temat: <strong>{{ topic_name }}</strong>
+                </div>
+              {% endif %}
+              {% if author_name %}
+                <div class="bg-blue-100 px-3 py-2 rounded text-blue-900">
+                  Autor: <strong>{{ author_name }}</strong>
+                </div>
+              {% endif %}
+              {% if publisher_name %}
+                <div class="bg-blue-100 px-3 py-2 rounded text-blue-900">
+                  Wydawca: <strong>{{ publisher_name }}</strong>
+                </div>
+              {% endif %}
+              {% if series_name %}
+                <div class="bg-blue-100 px-3 py-2 rounded text-blue-900">
+                  Seria: <strong>{{ series_name }}</strong>
+                </div>
+              {% endif %}
+              {% if is_read == 'true' %}
+                <div class="bg-blue-100 px-3 py-2 rounded text-blue-900">
+                  Status: <strong>Przeczytane</strong>
+                </div>
+              {% elif is_read == 'false' %}
+                <div class="bg-blue-100 px-3 py-2 rounded text-blue-900">
+                  Status: <strong>Nieprzeczytane</strong>
+                </div>
+              {% endif %}
+              {% if is_favorite == 'true' %}
+                <div class="bg-blue-100 px-3 py-2 rounded text-blue-900">
+                  Status: <strong>Ulubione</strong>
+                </div>
+              {% endif %}
+            </div>
+            <a href="/" class="mt-4 inline-block rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-500">Wyczyść filtry</a>
+          </section>
+        {% endif %}
+
+        <section class="rounded bg-white p-6 shadow-sm">
+          <h2 class="text-2xl font-semibold mb-4">Szybki dostęp</h2>
+          <div class="grid gap-3 sm:grid-cols-2">
+            <a href="/authors/" class="rounded border border-slate-200 bg-slate-50 px-4 py-4 text-left text-blue-600 hover:border-slate-300 hover:bg-white">Przeglądaj autorów</a>
+            <a href="/publishers/" class="rounded border border-slate-200 bg-slate-50 px-4 py-4 text-left text-blue-600 hover:border-slate-300 hover:bg-white">Przeglądaj wydawców</a>
+            <a href="/series/" class="rounded border border-slate-200 bg-slate-50 px-4 py-4 text-left text-blue-600 hover:border-slate-300 hover:bg-white">Przeglądaj serie</a>
+            <a href="/notes/" class="rounded border border-slate-200 bg-slate-50 px-4 py-4 text-left text-blue-600 hover:border-slate-300 hover:bg-white">Przeglądaj notatki</a>
+          </div>
+        </section>
+
         <section class="rounded bg-white p-6 shadow-sm">
           <h2 class="text-2xl font-semibold mb-4">Filtruj książki</h2>
           <div class="space-y-4">
@@ -16,7 +74,7 @@
               <h3 class="font-semibold">Gatunki</h3>
               <ul class="mt-2 space-y-2 text-slate-700">
                 {% for genre in genres %}
-                  <li><a href="?genre={{ genre.id }}" class="text-blue-600 hover:underline">{{ genre.name }}</a></li>
+                  <li><a href="?genre={{ genre.id }}" class="text-blue-600 hover:underline {% if genre_id|stringformat:'s' == genre.id|stringformat:'s' %}font-bold text-blue-800{% endif %}">{{ genre.name }}</a></li>
                 {% empty %}
                   <li class="text-slate-500">Brak gatunków do filtrowania.</li>
                 {% endfor %}
@@ -27,10 +85,58 @@
               <h3 class="font-semibold">Tematy</h3>
               <ul class="mt-2 space-y-2 text-slate-700">
                 {% for topic in topics %}
-                  <li><a href="?topic={{ topic.id }}" class="text-blue-600 hover:underline">{{ topic.name }}</a></li>
+                  <li><a href="?topic={{ topic.id }}" class="text-blue-600 hover:underline {% if topic_id|stringformat:'s' == topic.id|stringformat:'s' %}font-bold text-blue-800{% endif %}">{{ topic.name }}</a></li>
                 {% empty %}
                   <li class="text-slate-500">Brak tematów do filtrowania.</li>
                 {% endfor %}
+              </ul>
+            </div>
+
+            <div>
+              <h3 class="font-semibold">Autorzy</h3>
+              <ul class="mt-2 space-y-2 text-slate-700 max-h-40 overflow-y-auto">
+                {% for author in authors %}
+                  <li><a href="?author={{ author.id }}" class="text-blue-600 hover:underline {% if author_id|stringformat:'s' == author.id|stringformat:'s' %}font-bold text-blue-800{% endif %}">{{ author.name }} {{ author.last_name }}</a></li>
+                {% empty %}
+                  <li class="text-slate-500">Brak autorów do filtrowania.</li>
+                {% endfor %}
+              </ul>
+            </div>
+
+            <div>
+              <h3 class="font-semibold">Wydawcy</h3>
+              <ul class="mt-2 space-y-2 text-slate-700 max-h-40 overflow-y-auto">
+                {% for pub in publishers %}
+                  <li><a href="?publisher={{ pub.id }}" class="text-blue-600 hover:underline {% if publisher_id|stringformat:'s' == pub.id|stringformat:'s' %}font-bold text-blue-800{% endif %}">{{ pub.name }}</a></li>
+                {% empty %}
+                  <li class="text-slate-500">Brak wydawców do filtrowania.</li>
+                {% endfor %}
+              </ul>
+            </div>
+
+            <div>
+              <h3 class="font-semibold">Serie</h3>
+              <ul class="mt-2 space-y-2 text-slate-700 max-h-40 overflow-y-auto">
+                {% for s in series %}
+                  <li><a href="?series={{ s.id }}" class="text-blue-600 hover:underline {% if series_id|stringformat:'s' == s.id|stringformat:'s' %}font-bold text-blue-800{% endif %}">{{ s.name }}</a></li>
+                {% empty %}
+                  <li class="text-slate-500">Brak serii do filtrowania.</li>
+                {% endfor %}
+              </ul>
+            </div>
+
+            <div>
+              <h3 class="font-semibold">Status czytania</h3>
+              <ul class="mt-2 space-y-2 text-slate-700">
+                <li><a href="?is_read=true" class="text-blue-600 hover:underline {% if is_read == 'true' %}font-bold text-blue-800{% endif %}">Przeczytane</a></li>
+                <li><a href="?is_read=false" class="text-blue-600 hover:underline {% if is_read == 'false' %}font-bold text-blue-800{% endif %}">Nieprzeczytane</a></li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 class="font-semibold">Ulubione</h3>
+              <ul class="mt-2 space-y-2 text-slate-700">
+                <li><a href="?is_favorite=true" class="text-blue-600 hover:underline {% if is_favorite == 'true' %}font-bold text-blue-800{% endif %}">Tylko ulubione</a></li>
               </ul>
             </div>
           </div>

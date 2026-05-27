@@ -1,0 +1,25 @@
+{% extends "base.html.jinja" %}
+
+{% block content %}
+  <div class="space-y-6">
+    <div class="rounded bg-white p-6 shadow-sm">
+      <h1 class="text-4xl font-bold">Lista serii</h1>
+      <p class="mt-2 text-slate-600">Przeglądaj serie książek dostępne w bibliotece.</p>
+    </div>
+
+    <section class="rounded bg-white p-6 shadow-sm">
+      {% if series %}
+        <div class="grid gap-4 sm:grid-cols-2">
+          {% for item in series %}
+            <article class="rounded border border-slate-200 p-5 hover:border-slate-400">
+              <a href="/series/{{ item.id }}/" class="text-xl font-semibold text-blue-600 hover:underline">{{ item.name }}</a>
+              <p class="mt-2 text-slate-500">{{ item.description|default:'Brak opisu.' }}</p>
+            </article>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="text-slate-500">Brak serii w bazie.</p>
+      {% endif %}
+    </section>
+  </div>
+{% endblock %}

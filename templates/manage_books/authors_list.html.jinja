@@ -1,0 +1,28 @@
+{% extends "base.html.jinja" %}
+
+{% block content %}
+  <div class="space-y-6">
+    <div class="rounded bg-white p-6 shadow-sm">
+      <h1 class="text-4xl font-bold">Lista autorów</h1>
+      <p class="mt-2 text-slate-600">Przeglądaj autorów zapisanych w bibliotece i sprawdź ich książki.</p>
+    </div>
+
+    <section class="rounded bg-white p-6 shadow-sm">
+      {% if authors %}
+        <div class="grid gap-4 sm:grid-cols-2">
+          {% for author in authors %}
+            <article class="rounded border border-slate-200 p-5 hover:border-slate-400">
+              <a href="/author/{{ author.id }}/" class="text-xl font-semibold text-blue-600 hover:underline">{{ author.title }} {{ author.name }} {{ author.last_name }}</a>
+              {% if author.alias %}
+                <p class="mt-2 text-slate-500">Pseudonim: {{ author.alias }}</p>
+              {% endif %}
+              <p class="mt-2 text-slate-500">Narodowość: {{ author.nationality }}</p>
+            </article>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="text-slate-500">Brak autorów w bazie.</p>
+      {% endif %}
+    </section>
+  </div>
+{% endblock %}
