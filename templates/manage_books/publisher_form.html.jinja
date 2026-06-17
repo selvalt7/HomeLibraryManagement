@@ -1,0 +1,26 @@
+{% extends "base.html.jinja" %}
+
+{% block content %}
+  <div class="mx-auto max-w-2xl space-y-6">
+    <div class="rounded bg-white p-6 shadow-sm">
+      <h1 class="text-3xl font-bold">{{ title }}</h1>
+    </div>
+    <form method="post" class="rounded bg-white p-6 shadow-sm space-y-4">
+      {% csrf_token %}
+      {% for field in form %}
+        <label class="block">
+          <span class="text-sm font-medium text-slate-700">{{ field.label }}</span>
+          {{ field }}
+          {% if field.errors %}<p class="mt-1 text-sm text-red-600">{{ field.errors.0 }}</p>{% endif %}
+        </label>
+      {% endfor %}
+      <div class="flex flex-wrap gap-3 pt-4">
+        <button type="submit" class="rounded bg-emerald-500 px-5 py-2 text-white hover:bg-emerald-400">{{ submit_label }}</button>
+        <a href="/publishers/" class="rounded border border-slate-300 px-5 py-2 text-slate-700 hover:bg-slate-50">Anuluj</a>
+        {% if publisher %}
+          <a href="/publisher/{{ publisher.id }}/delete/" class="rounded border border-red-300 px-5 py-2 text-red-700 hover:bg-red-50">Usuń wydawcę</a>
+        {% endif %}
+      </div>
+    </form>
+  </div>
+{% endblock %}

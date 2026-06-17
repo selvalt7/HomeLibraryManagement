@@ -11,11 +11,10 @@ class Book(models.Model):
     ]
     LANGUAGES = [
         ('english', 'English'),
+        ('polish', 'Polish'),
         ('spanish', 'Spanish'),
         ('french', 'French'),
         ('german', 'German'),
-        ('chinese', 'Chinese'),
-        ('japanese', 'Japanese'),
         ('other', 'Other'),
     ]
 
@@ -32,6 +31,7 @@ class Book(models.Model):
     authors = models.ManyToManyField('Author', related_name='books', blank=True)
     publisher = models.ForeignKey('Publisher', on_delete=models.RESTRICT)
     series = models.ForeignKey('Series', on_delete=models.RESTRICT, blank=True, null=True)
+    category = models.ForeignKey('Category', on_delete=models.SET_NULL, blank=True, null=True, related_name='books')
     genres = models.ManyToManyField('Genre', related_name='books', blank=True)
     topic = models.ManyToManyField('Topic', related_name='books', blank=True)
 
@@ -53,9 +53,10 @@ class Author(models.Model):
     title = models.CharField(max_length=50, choices=TITLES, blank=True, null=True)
 
     def __str__(self):
+        title = f'{self.get_title_display()} ' if self.title else ''
         if self.alias:
-            return f"{self.title} {self.alias} {self.last_name}"
-        return f"{self.title} {self.name} {self.last_name}"
+            return f'{title}{self.alias} {self.last_name}'
+        return f'{title}{self.name} {self.last_name}'
 
 class Publisher(models.Model):
     name = models.CharField(max_length=200)
@@ -87,7 +88,14 @@ class Topic(models.Model): #temat (książki)
 
     def __str__(self):
         return self.name
-    
+
+class Category(models.Model): #dział (książki)
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
 class Note(models.Model): #notatka (do książki)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)

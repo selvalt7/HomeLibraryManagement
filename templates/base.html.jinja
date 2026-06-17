@@ -18,6 +18,8 @@
         <a href="/authors/" class="rounded bg-slate-700 px-3 py-2 hover:bg-slate-600">Autorzy</a>
         <a href="/publishers/" class="rounded bg-slate-700 px-3 py-2 hover:bg-slate-600">Wydawcy</a>
         <a href="/series/" class="rounded bg-slate-700 px-3 py-2 hover:bg-slate-600">Serie</a>
+        <a href="/genres/" class="rounded bg-slate-700 px-3 py-2 hover:bg-slate-600">Gatunki</a>
+        <a href="/topics/" class="rounded bg-slate-700 px-3 py-2 hover:bg-slate-600">Tematy</a>
         <a href="/notes/" class="rounded bg-slate-700 px-3 py-2 hover:bg-slate-600">Notatki</a>
         {% if request.user.is_authenticated %}
           <a href="/book/add/" class="rounded bg-emerald-500 px-3 py-2 text-white hover:bg-emerald-400">Dodaj książkę</a>
@@ -34,7 +36,7 @@
     {% if messages %}
       <section class="space-y-2 mb-6">
         {% for message in messages %}
-          <div class="rounded border px-4 py-3 {% if message.tags %}bg-{{ message.tags }}-100 text-{{ message.tags }}-900{% else %}bg-slate-100 text-slate-900{% endif %}">
+          <div class="rounded border px-4 py-3 {% if message.tags == 'error' %}border-red-200 bg-red-50 text-red-900{% elif message.tags == 'success' %}border-emerald-200 bg-emerald-50 text-emerald-900{% else %}border-slate-200 bg-slate-100 text-slate-900{% endif %}">
             {{ message }}
           </div>
         {% endfor %}

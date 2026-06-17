@@ -9,7 +9,7 @@
 
     <div class="grid gap-6 xl:grid-cols-[280px_1fr]">
       <aside class="space-y-6">
-        {% if genre_name or topic_name or author_name or publisher_name or series_name or is_read or is_favorite %}
+        {% if genre_name or topic_name or category_name or author_name or publisher_name or series_name or is_read or is_favorite %}
           <section class="rounded bg-blue-50 p-6 shadow-sm border border-blue-200">
             <h2 class="text-lg font-semibold mb-3 text-blue-900">Aktywne filtry</h2>
             <div class="space-y-2 text-sm">
@@ -21,6 +21,11 @@
               {% if topic_name %}
                 <div class="bg-blue-100 px-3 py-2 rounded text-blue-900">
                   Temat: <strong>{{ topic_name }}</strong>
+                </div>
+              {% endif %}
+              {% if category_name %}
+                <div class="bg-blue-100 px-3 py-2 rounded text-blue-900">
+                  Dział: <strong>{{ category_name }}</strong>
                 </div>
               {% endif %}
               {% if author_name %}
@@ -88,6 +93,17 @@
                   <li><a href="?topic={{ topic.id }}" class="text-blue-600 hover:underline {% if topic_id|stringformat:'s' == topic.id|stringformat:'s' %}font-bold text-blue-800{% endif %}">{{ topic.name }}</a></li>
                 {% empty %}
                   <li class="text-slate-500">Brak tematów do filtrowania.</li>
+                {% endfor %}
+              </ul>
+            </div>
+
+            <div>
+              <h3 class="font-semibold">Działy</h3>
+              <ul class="mt-2 space-y-2 text-slate-700">
+                {% for category in categories %}
+                  <li><a href="?category={{ category.id }}" class="text-blue-600 hover:underline {% if category_id|stringformat:'s' == category.id|stringformat:'s' %}font-bold text-blue-800{% endif %}">{{ category.name }}</a></li>
+                {% empty %}
+                  <li class="text-slate-500">Brak działów do filtrowania.</li>
                 {% endfor %}
               </ul>
             </div>

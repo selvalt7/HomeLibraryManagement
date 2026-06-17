@@ -1,0 +1,15 @@
+{% extends "base.html.jinja" %}
+
+{% block content %}
+  <div class="mx-auto max-w-xl rounded bg-white p-6 shadow-sm">
+    <h1 class="text-3xl font-bold">Usuń książkę</h1>
+    <p class="mt-4 text-slate-700">Czy na pewno chcesz usunąć książkę <strong>{{ book.title }}</strong> z biblioteki?</p>
+    <p class="mt-2 text-sm text-slate-500">Tej operacji nie można cofnąć. Wszystkie powiązane notatki również zostaną usunięte.</p>
+
+    <form method="post" class="mt-6 flex flex-wrap gap-3">
+      {% csrf_token %}
+      <button type="submit" class="rounded bg-red-600 px-5 py-2 text-white hover:bg-red-500">Tak, usuń książkę</button>
+      <a href="/book/{{ book.id }}/" class="rounded border border-slate-300 px-5 py-2 text-slate-700 hover:bg-slate-50">Anuluj</a>
+    </form>
+  </div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "base.html.jinja" %}
+
+{% block content %}
+  <div class="mx-auto max-w-md rounded bg-white p-6 shadow-sm">
+    <h1 class="text-3xl font-bold">Rejestracja</h1>
+    <p class="mt-2 text-slate-600">Utwórz konto, aby zarządzać swoją biblioteką książek.</p>
+
+    <form method="post" class="mt-6 space-y-4">
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="rounded border border-red-200 bg-red-50 p-3 text-red-800">
+          {{ form.non_field_errors }}
+        </div>
+      {% endif %}
+      <label class="block">
+        <span class="text-sm font-medium text-slate-700">Nazwa użytkownika</span>
+        <input type="text" name="username" value="{{ form.username.value|default:'' }}" class="mt-2 w-full rounded border border-slate-300 bg-slate-50 p-3" required>
+        {% if form.username.errors %}<p class="mt-1 text-sm text-red-600">{{ form.username.errors.0 }}</p>{% endif %}
+      </label>
+      <label class="block">
+        <span class="text-sm font-medium text-slate-700">Hasło</span>
+        <input type="password" name="password1" class="mt-2 w-full rounded border border-slate-300 bg-slate-50 p-3" required>
+        {% if form.password1.errors %}<p class="mt-1 text-sm text-red-600">{{ form.password1.errors.0 }}</p>{% endif %}
+      </label>
+      <label class="block">
+        <span class="text-sm font-medium text-slate-700">Powtórz hasło</span>
+        <input type="password" name="password2" class="mt-2 w-full rounded border border-slate-300 bg-slate-50 p-3" required>
+        {% if form.password2.errors %}<p class="mt-1 text-sm text-red-600">{{ form.password2.errors.0 }}</p>{% endif %}
+      </label>
+      <button type="submit" class="w-full rounded bg-emerald-500 px-4 py-2 text-white hover:bg-emerald-400">Utwórz konto</button>
+    </form>
+
+    <p class="mt-6 text-sm text-slate-600">
+      Masz już konto?
+      <a href="/login/" class="font-semibold text-blue-600 hover:underline">Zaloguj się</a>
+    </p>
+  </div>
+{% endblock %}

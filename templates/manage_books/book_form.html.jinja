@@ -1,0 +1,39 @@
+{% extends "base.html.jinja" %}
+
+{% block content %}
+  <div class="mx-auto max-w-3xl space-y-6">
+    <div class="rounded bg-white p-6 shadow-sm">
+      <h1 class="text-3xl font-bold">{{ title }}</h1>
+      <p class="mt-2 text-slate-600">Uzupełnij dane książki. Pola oznaczone * są wymagane.</p>
+    </div>
+
+    <form method="post" class="rounded bg-white p-6 shadow-sm space-y-6">
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="rounded border border-red-200 bg-red-50 p-3 text-red-800">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <div class="grid gap-6 md:grid-cols-2">
+        {% for field in form %}
+          <label class="block {% if field.name == 'authors' or field.name == 'genres' or field.name == 'topic' %}md:col-span-2{% endif %}">
+            <span class="text-sm font-medium text-slate-700">{{ field.label }}{% if field.field.required %} *{% endif %}</span>
+            {{ field }}
+            {% if field.help_text %}<p class="mt-1 text-xs text-slate-500">{{ field.help_text }}</p>{% endif %}
+            {% if field.errors %}<p class="mt-1 text-sm text-red-600">{{ field.errors.0 }}</p>{% endif %}
+          </label>
+        {% endfor %}
+      </div>
+
+      <div class="flex flex-wrap gap-3 border-t border-slate-200 pt-6">
+        <button type="submit" class="rounded bg-emerald-500 px-5 py-2 text-white hover:bg-emerald-400">{{ submit_label }}</button>
+        {% if book %}
+          <a href="/book/{{ book.id }}/" class="rounded border border-slate-300 px-5 py-2 text-slate-700 hover:bg-slate-50">Anuluj</a>
+        {% else %}
+          <a href="/" class="rounded border border-slate-300 px-5 py-2 text-slate-700 hover:bg-slate-50">Anuluj</a>
+        {% endif %}
+        <a href="/author/add/" class="rounded border border-blue-300 px-5 py-2 text-blue-700 hover:bg-blue-50">Dodaj nowego autora</a>
+        <a href="/publisher/add/" class="rounded border border-blue-300 px-5 py-2 text-blue-700 hover:bg-blue-50">Dodaj nowego wydawcę</a>
+      </div>
+    </form>
+  </div>
+{% endblock %}
